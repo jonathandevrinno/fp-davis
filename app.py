@@ -49,7 +49,6 @@ elif option == "📽️ IMDb Scrapping":
   # Tulisan kecil tentang sumber data
   st.markdown("[Indonesia Box Office Mojo](https://www.boxofficemojo.com/weekend/by-year/2024/?area=ID) - Data diambil dari Indonesia Box Office Mojo")
 
-  
   # Memuat data dari file CSV
   df = pd.read_csv('film_data_2024.csv')
 
@@ -72,7 +71,7 @@ elif option == "📽️ IMDb Scrapping":
   
   # Dropdown menu untuk memilih distributor
   dropdown_options = list(revenue_by_distributor.index)
-  dropdown_options.sort()  # Mengurutkan nama distributor
+  dropdown_options.sort() 
   dropdown_options.insert(0, 'Pilih Distributor')
   
   # Dropdown menu di Streamlit
