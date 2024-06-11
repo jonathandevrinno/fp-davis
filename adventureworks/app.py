@@ -9,7 +9,7 @@ db_connection = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",
-    database="aw"
+    database="adventureworks"
 )
 
 # Function to execute MySQL query
