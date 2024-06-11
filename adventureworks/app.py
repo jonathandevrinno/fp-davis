@@ -1,25 +1,31 @@
-# Import libraries
 import streamlit as st
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import seaborn as sns
+import matplotlib.pyplot as plt
+import mysql.connector
 
-# Database connect
+# Membuat koneksi ke database
 db_connection = mysql.connector.connect(
     host="localhost",
     user="root",
     password="",
-    database="adventureworks"
+    database="aw"
 )
 
-# Execute MySQL
+# Function to execute MySQL query
 def execute_query_mysql(query):
+    # Creating a cursor object
     cursor = db_connection.cursor()
+
+    # Executing the query
     cursor.execute(query)
+
+    # Fetching the results
     result = cursor.fetchall()
+
+    # Closing the cursor
     cursor.close()
+
     return result
 
 # Function to display bar chart
@@ -32,79 +38,125 @@ def bar_chart(data, x, y, title, xlabel, ylabel):
     plt.tight_layout()
     st.pyplot(fig)
 
-# Comparison menggunakan bar chart
-tren_penjualan = factintsales.merge(dimtime_df, left_on='OrderDateKey', right_on='TimeKey')
-tren_penjualan = tren_penjualan.groupby('CalendarYear').agg({'SalesAmount': 'sum'}).reset_index()
+# Function to display pie chart
+def pie_chart(data, labels, values, title):
+    fig, ax = plt.subplots(figsize=(8, 8))
+    ax.pie(data[values], labels=data[labels], autopct='%1.1f%%', startangle=140)
+    ax.axis('equal')
+    ax.set_title(title)
+    plt.tight_layout()
+    st.pyplot(fig)
 
-colors = sns.color_palette("hls", len(tren_penjualan))
+# Function to display scatter plot
+def scatter_plot(data, x, y, title, xlabel, ylabel):
+    # Convert decimal.Decimal to float
+    data[x] = data[x].astype(float)
+    data[y] = data[y].astype(float)
 
-plt.figure(figsize=(10, 5))
-sns.barplot(data=tren_penjualan, x='CalendarYear', y='SalesAmount', palette=colors)
-plt.title('Perbandingan Jumlah Penjualan tiap Tahun')
-plt.xlabel('Year')
-plt.ylabel('Total Sales')
-plt.show()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.regplot(x=x, y=y, data=data, scatter_kws={'color': 'skyblue'}, line_kws={'color': 'red'}, ax=ax)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True)
+    plt.tight_layout()
+    st.pyplot(fig)
 
-# Relationship menggunakan scatter plot
-customer_buy = factintsales.merge(dimcustomer_df, left_on='CustomerKey', right_on='CustomerKey')
-customer_buy = customer_buy.groupby('FirstName').agg({'SalesAmount': 'sum','YearlyIncome': 'mean',}).reset_index()
 
-colors = customer_buy['SalesAmount']
-norm = plt.Normalize(colors.min(), colors.max())
-cmap = plt.cm.coolwarm
-plt.figure(figsize=(12, 8))
-sns.set(style="whitegrid")
-scatter = plt.scatter(customer_buy['YearlyIncome'], customer_buy['SalesAmount'], c=colors, cmap=cmap, edgecolor='black', alpha=0.7, s=100)
-cbar = plt.colorbar(scatter)
-cbar.set_label('Warna Total Pembelian berdasarkan Jumlah')
-sns.regplot(x='YearlyIncome', y='SalesAmount', data=customer_buy, scatter=False, color='blue', line_kws={"linewidth":1, "linestyle":"--"})
-plt.title('Hubungan Pendapatan Tahunan dengan Total Penjualan', fontsize=15)
-plt.xlabel('Pendapatan Tahunan', fontsize=12)
-plt.ylabel('Total Penjualan', fontsize=12)
-plt.grid(True, linestyle='--', alpha=0.6)
-plt.show()
+# Function to display bubble plot
+def bubble_plot(data, x, y, title, xlabel, ylabel):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.scatter(data[x], data[y], alpha=0.5)
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    plt.tight_layout()
+    st.pyplot(fig)
 
-# Composition menggunakan pie chart dan bar chart
-penjualan_product = factintsales.merge(dimproduct_df, left_on='ProductKey', right_on='ProductKey')
-penjualan_subkategori = penjualan_product.merge(dimproductsubcategory_df, left_on='ProductSubcategoryKey', right_on='ProductSubcategoryKey')
-penjualan_kategori = penjualan_subkategori.merge(dimproductcategory_df, left_on='ProductCategoryKey', right_on='ProductCategoryKey')
 
-penjualan_kategori = penjualan_kategori.groupby('EnglishProductCategoryName').agg({'SalesAmount': 'sum'}).reset_index()
-penjualan_subkategori = penjualan_subkategori.groupby('EnglishProductSubcategoryName').agg({'SalesAmount': 'sum'}).reset_index()
-penjualan_subkategori = penjualan_subkategori.sort_values('SalesAmount', ascending=False).head(10)
 
-sns.set(style="whitegrid")
-fig, ax = plt.subplots(1, 2, figsize=(18, 8))
 
-colors = sns.color_palette('viridis', len(penjualan_kategori))
-wedges, texts, autotexts = ax[0].pie(penjualan_kategori['SalesAmount'], labels=None, autopct='%1.1f%%', startangle=90,
-                                     colors=colors, pctdistance=0.75, labeldistance=0, textprops={'fontsize': 15})
-legend_labels = penjualan_kategori['EnglishProductCategoryName']
-legend_colors = colors
-legend_handles = [patches.Patch(color=color) for color in legend_colors]
-ax[0].legend(legend_handles, legend_labels, loc='upper left', bbox_to_anchor=(1.05, 1), title='Kategori Produk')
-ax[0].set_title('Persentase Penjualan Berdasarkan Kategori Produk', fontsize=15)
-ax[0].axis('equal')
+# Function to display histogram
+def histogram(data, column, bins, title, xlabel, ylabel):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.hist(data[column], bins=bins, color='pink', edgecolor='black')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.grid(True)
+    plt.tight_layout()
+    st.pyplot(fig)
 
-colors = sns.color_palette('Spectral', len(penjualan_subkategori))
-sns.barplot(x='SalesAmount', y='EnglishProductSubcategoryName', data=penjualan_subkategori.head(10), ax=ax[1], palette=colors)
-ax[1].set_title('Penjualan 10 Subkategori Produk Terbesar', fontsize=15)
-ax[1].set_xlabel('Sales Amount', fontsize=12)
-ax[1].set_ylabel('')
-for p, label in zip(ax[1].patches, penjualan_subkategori['SalesAmount']):
-    text_color = 'white' if p.get_facecolor()[0] > 0.5 else 'black'
-    ax[1].annotate(f'{label:.1f}', (p.get_width(), p.get_y() + p.get_height() / 2.),
-                 ha='left', va='center', fontsize=10, color=text_color, xytext=(5, 0), textcoords='offset points')
-plt.tight_layout()
-plt.show()
+# Function to display KDE plot
+def kde_plot(data, column, fill, color, title, xlabel, ylabel):
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.kdeplot(data[column], fill=fill, color=color, ax=ax)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.grid(True)
+    plt.tight_layout()
+    st.pyplot(fig)
 
-# Distribution menggunakan histogram
-tren_penjualan = factintsales.merge(dimtime_df, left_on='OrderDateKey', right_on='TimeKey')
+# Main function
+def main():
+    st.title('Visualizations from XAMPP Database')
 
-plt.figure(figsize=(10, 5))
-sns.histplot(data=tren_penjualan, x='MonthNumberOfYear', bins=12, kde=True, color='green')
-plt.title('Distribusi Penjualan berdasarkan Bulan')
-plt.show()
+    # Query to retrieve product sales data
+    sales_query = """
+        SELECT DISTINCT dp.EnglishProductName, SUM(fs.SalesAmount) AS TotalSales
+        FROM factinternetsales AS fs
+        INNER JOIN dimproduct AS dp ON fs.ProductKey = dp.ProductKey
+        GROUP BY dp.EnglishProductName
+        ORDER BY TotalSales DESC
+        LIMIT 10
+    """
+    sales_df = pd.DataFrame(execute_query_mysql(sales_query), columns=['EnglishProductName', 'TotalSales'])
+    st.subheader('Top 10 Products by Total Sales (Bar Chart)')
+    bar_chart(sales_df, 'EnglishProductName', 'TotalSales', 'Top 10 Products by Total Sales (Bar Chart)', 'Total Sales', 'Product Name')
+
+    st.subheader('Top 10 Products by Total Sales (Pie Chart)')
+    pie_chart(sales_df, 'EnglishProductName', 'TotalSales', 'Top 10 Products by Total Sales (Pie Chart)')
+
+    # Query to retrieve StandardCost and ListPrice data
+    product_query = """
+        SELECT StandardCost, ListPrice
+        FROM dimproduct
+    """
+    product_df = pd.DataFrame(execute_query_mysql(product_query), columns=['StandardCost', 'ListPrice'])
+
+    st.subheader('Relationship between Standard Cost and List Price')
+    scatter_plot(product_df, 'StandardCost', 'ListPrice', 'Relationship between Standard Cost and List Price', 'Standard Cost', 'List Price')
+
+    st.subheader('Bubble Plot of Product Variables')
+    bubble_plot(product_df, 'StandardCost', 'ListPrice',  'Bubble Plot of Product Variables', 'Standard Cost', 'List Price')
+
+
+    # Query to retrieve product composition data by ProductLine
+    product_line_query = """
+        SELECT ProductLine, COUNT(*) AS TotalProducts
+        FROM dimproduct
+        GROUP BY ProductLine
+    """
+    product_line_df = pd.DataFrame(execute_query_mysql(product_line_query), columns=['ProductLine', 'TotalProducts'])
+
+    st.subheader('Composition of Products by Product Line')
+    bar_chart(product_line_df, 'ProductLine', 'TotalProducts', 'Composition of Products by Product Line', 'Product Line', 'Total Products')
+
+
+    # Query to retrieve data to be visualized
+    data_query = """
+        SELECT ListPrice
+        FROM dimproduct
+        WHERE ListPrice IS NOT NULL
+    """
+    data_df = pd.DataFrame(execute_query_mysql(data_query), columns=['ListPrice'])
+
+    st.subheader('Distribution of Product List Prices (Histogram)')
+    histogram(data_df, 'ListPrice', 20, 'Distribution of Product List Prices', 'List Price', 'Frequency')
+
+    st.subheader('Kernel Density Estimate of Product List Prices (KDE Plot)')
+    kde_plot(data_df, 'ListPrice', True, 'purple', 'Kernel Density Estimate of Product List Prices', 'List Price', 'Density')
 
 if __name__ == "__main__":
     main()
