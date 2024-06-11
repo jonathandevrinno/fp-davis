@@ -1,3 +1,5 @@
+import streamlit as st
+
 # Set the page icon
 st.set_page_config(page_title="FINAL PROJECT VISUALISASI DATA", 
                    page_icon=":bar_chart:",
