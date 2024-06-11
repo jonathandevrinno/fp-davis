@@ -1,4 +1,8 @@
 import streamlit as st
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import mysql.connector
 
 # Set the page icon
 st.set_page_config(page_title="FINAL PROJECT VISUALISASI DATA", 
@@ -15,6 +19,6 @@ st.markdown("This task is created by: \n[Jonathan Devrinno](https://www.linkedin
 # Sidebar menu
 option = st.sidebar.selectbox("Select a feature", ["AdventureWorks", "IMDb Scrapping"])
 
-if option == "AdventureWorks":
+if option == "📄 AdventureWorks":
   
-elif option == "IMDb Scrapping":
+elif option == "📽️ IMDb Scrapping":
