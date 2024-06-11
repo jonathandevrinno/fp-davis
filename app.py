@@ -14,7 +14,7 @@ option = st.sidebar.selectbox("Select a feature", ["AdventureWorks", "IMDb Scrap
 if option == "AdventureWorks":
     # Owner Name
     st.header("Ownership:")
-    st.markdown("This task is created by:\n[Jonathan Devrinno](https://www.linkedin.com/in/jonathandevrinno/)\nNPM:21082010204.")
+    st.markdown("This task is created by: \n[Jonathan Devrinno](https://www.linkedin.com/in/jonathandevrinno/) \nNPM:21082010204.")
   
   # Data Visualisation page
     st.header("Data Visualisation")
@@ -23,4 +23,4 @@ if option == "AdventureWorks":
 elif option == "IMDb Scrapping":
     # Owner Name
     st.header("Ownership:")
-    st.markdown("This task is created by [Jonathan Devrinno](https://www.linkedin.com/in/jonathandevrinno/) \n(21082010204).")
+    st.markdown("This task is created by: \n[Jonathan Devrinno](https://www.linkedin.com/in/jonathandevrinno/) \nNPM:21082010204.")
