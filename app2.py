@@ -57,7 +57,7 @@ if selected_distributor != 'Pilih Distributor':
 
 # Menampilkan pie chart menggunakan matplotlib di Streamlit
 st.write('## Persentase Pendapatan per Distributor pada Tahun 2024')
-colors = ['#FFC0CB', '#FF69B4', '#DDA0DD', '#9370DB', '#ADD8E6', '#87CEFA', '#B0C4DE', '#00BFFF', '#1E90FF', '#6495ED']
+colors = ['#6495ED', '#1E90FF', '#87CEEB', '#4682B4', '#00BFFF', '#ADD8E6', '#B0E0E6', '#AFEEEE', '#00CED1', '#87CEFA']
 plt.figure(figsize=(10, 6))
 plt.pie(revenue_by_distributor, labels=revenue_by_distributor.index, autopct=autopct_format(revenue_by_distributor), startangle=140, colors=colors)
 plt.axis('equal')
