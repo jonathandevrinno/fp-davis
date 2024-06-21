@@ -16,7 +16,7 @@ def autopct_format(values):
     return my_format
 
 # Judul Besar dengan font lebih besar dan bold
-st.markdown("<h1 style='text-align: center; color: #F4C2C2;'>Tugas Data Visualisasi</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: '>Tugas Data Visualisasi</h1>", unsafe_allow_html=True)
 
 # Tulisan kecil tentang sumber data
 st.markdown("[Indonesia Box Office Mojo](https://www.boxofficemojo.com/weekend/by-year/2024/?area=ID) - Data diambil dari Indonesia Box Office Mojo")
