@@ -209,3 +209,9 @@ elif option == "IMDb Scrapping":
         plt.ylabel('Pendapatan')
         plt.legend()
         st.pyplot(plt)
+
+else:
+            st.error("pymysql is not installed. Please install it to use AdventureWorks visualization.")
+
+    except Exception as e:
+        st.error(f"Error: {e}")
