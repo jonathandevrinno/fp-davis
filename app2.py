@@ -26,7 +26,7 @@ st.write("Nama: Jonathan Devrinno")
 st.write("NPM: 21082010204")
 
 # Memuat data dari file CSV
-df = pd.read_csv('film_data_2024.csv')
+df = pd.read_csv('IMDB_2024.csv')
 
 # Membersihkan kolom 'Pendapatan' agar hanya berisi angka
 df['Pendapatan'] = df['Pendapatan'].replace('-', 0)
