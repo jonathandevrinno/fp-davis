@@ -97,11 +97,6 @@ if option == "AdventureWorks":
                 plt.xlabel('Jumlah Penjualan')
                 plt.ylabel('Frekuensi')
                 st.pyplot(plt)
-        else:
-            st.error("pymysql is not installed. Please install it to use AdventureWorks visualization.")
-
-    except Exception as e:
-        st.error(f"Error: {e}")
 
             # AdventureWorks app layout
             st.title("Dashboard Visualisasi Data AdventureWorks")
@@ -180,37 +175,37 @@ elif option == "IMDb Scrapping":
         if selected_distributor != 'Pilih Distributor':
             display_movie_description(selected_distributor)
 
-    # Menampilkan pie chart menggunakan matplotlib di Streamlit
-    st.write('## Persentase Pendapatan per Distributor pada Tahun 2024')
-    colors = ['#FFC0CB', '#FF69B4', '#DDA0DD', '#9370DB', '#ADD8E6', '#87CEFA', '#B0C4DE', '#00BFFF', '#1E90FF', '#6495ED']
-    plt.figure(figsize=(10, 6))
-    plt.pie(revenue_by_distributor, labels=revenue_by_distributor.index, autopct=autopct_format(revenue_by_distributor), startangle=140, colors=colors)
-    plt.axis('equal')
-    st.pyplot(plt)
-
-    # Bar Chart: Top 10 Distributors by Total Revenue
-    st.write('## Top 10 Distributors by Total Revenue')
-    top_10_distributors = revenue_by_distributor.head(10)
-    plt.figure(figsize=(12, 6))
-    sns.barplot(x=top_10_distributors.values, y=top_10_distributors.index, palette="Blues_d")
-    plt.title('Top 10 Distributors by Total Revenue')
-    plt.xlabel('Total Revenue')
-    plt.ylabel('Distributor')
-    st.pyplot(plt)
-
-    # Line Chart: Revenue trends over time for selected distributors
-    st.write('## Revenue Trends Over Time for Selected Distributors')
-    df['Tanggal'] = pd.to_datetime(df['Tanggal'], format='%d-%m-%Y')
-    distributors_to_plot = st.multiselect('Pilih Distributor untuk Melihat Tren Pendapatan:', options=revenue_by_distributor.index.tolist(), default=revenue_by_distributor.index.tolist()[:3])
-    if distributors_to_plot:
-        df_filtered = df[df['Distributor'].isin(distributors_to_plot)]
-        plt.figure(figsize=(12, 6))
-        for distributor in distributors_to_plot:
-            df_dist = df_filtered[df_filtered['Distributor'] == distributor]
-            df_dist = df_dist.groupby('Tanggal')['Pendapatan'].sum().reset_index()
-            plt.plot(df_dist['Tanggal'], df_dist['Pendapatan'], label=distributor)
-        plt.title('Revenue Trends Over Time')
-        plt.xlabel('Tanggal')
-        plt.ylabel('Pendapatan')
-        plt.legend()
+        # Menampilkan pie chart menggunakan matplotlib di Streamlit
+        st.write('## Persentase Pendapatan per Distributor pada Tahun 2024')
+        colors = ['#FFC0CB', '#FF69B4', '#DDA0DD', '#9370DB', '#ADD8E6', '#87CEFA', '#B0C4DE', '#00BFFF', '#1E90FF', '#6495ED']
+        plt.figure(figsize=(10, 6))
+        plt.pie(revenue_by_distributor, labels=revenue_by_distributor.index, autopct=autopct_format(revenue_by_distributor), startangle=140, colors=colors)
+        plt.axis('equal')
         st.pyplot(plt)
+
+        # Bar Chart: Top 10 Distributors by Total Revenue
+        st.write('## Top 10 Distributors by Total Revenue')
+        top_10_distributors = revenue_by_distributor.head(10)
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x=top_10_distributors.values, y=top_10_distributors.index, palette="Blues_d")
+        plt.title('Top 10 Distributors by Total Revenue')
+        plt.xlabel('Total Revenue')
+        plt.ylabel('Distributor')
+        st.pyplot(plt)
+
+        # Line Chart: Revenue trends over time for selected distributors
+        st.write('## Revenue Trends Over Time for Selected Distributors')
+        df['Tanggal'] = pd.to_datetime(df['Tanggal'], format='%d-%m-%Y')
+        distributors_to_plot = st.multiselect('Pilih Distributor untuk Melihat Tren Pendapatan:', options=revenue_by_distributor.index.tolist(), default=revenue_by_distributor.index.tolist()[:3])
+        if distributors_to_plot:
+            df_filtered = df[df['Distributor'].isin(distributors_to_plot)]
+            plt.figure(figsize=(12, 6))
+            for distributor in distributors_to_plot:
+                df_dist = df_filtered[df_filtered['Distributor'] == distributor]
+                df_dist = df_dist.groupby('Tanggal')['Pendapatan'].sum().reset_index()
+                plt.plot(df_dist['Tanggal'], df_dist['Pendapatan'], label=distributor)
+            plt.title('Revenue Trends Over Time')
+            plt.xlabel('Tanggal')
+            plt.ylabel('Pendapatan')
+            plt.legend()
+            st.pyplot(plt)
