@@ -1,7 +1,6 @@
 streamlit
+pymysql
 pandas
 numpy
 matplotlib
 seaborn
-pymyqsl
-sqlalchemy
