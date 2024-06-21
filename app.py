@@ -4,29 +4,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-#  Import pymysql dan menghandle error
+# Set the page configuration at the very beginning
+st.set_page_config(page_title="FINAL PROJECT VISUALISASI DATA", 
+                   page_icon=":bar_chart:",
+                   initial_sidebar_state="expanded")
+
+# Attempt to import pymysql and handle import errors
 try:
     import pymysql
     from sqlalchemy import create_engine
 except ImportError:
     st.warning("pymysql or sqlalchemy is not installed. Please install them to use AdventureWorks visualization.")
 
-# Icon Halaman
-st.set_page_config(page_title="FINAL PROJECT VISUALISASI DATA", 
-                   page_icon=":bar_chart:",
-                   initial_sidebar_state="expanded")
-
-# Judul Halaman
+# Set the page title
 st.title("Final Project Visualisasi Data")
 
-# Watermark
+# Owner Name
 st.header("Ownership:")
 st.markdown("This task is created by: \n[Jonathan Devrinno](https://www.linkedin.com/in/jonathandevrinno/) (21082010204)")
 
 # Sidebar menu
 option = st.sidebar.selectbox("Select a feature", ["AdventureWorks", "IMDb Scrapping"])
 
-# Visualisasi AdventureWorks
+# AdventureWorks visualization
 if option == "AdventureWorks":
     try:
         # Database connection
@@ -97,7 +97,7 @@ if option == "AdventureWorks":
             plt.ylabel('Frekuensi')
             st.pyplot(plt)
 
-        # Layout AdventureWorks
+        # AdventureWorks app layout
         st.title("Dashboard Visualisasi Data AdventureWorks")
 
         visualization_type = st.selectbox(
@@ -117,7 +117,7 @@ if option == "AdventureWorks":
     except Exception as e:
         st.error(f"Error: {e}")
 
-# Visualisasi Scrapping IMDb
+# IMDb Scrapping visualization
 elif option == "IMDb Scrapping":
     # Fungsi untuk mengubah format menjadi miliar
     def billions(x, pos):
@@ -131,19 +131,19 @@ elif option == "IMDb Scrapping":
             return '{v:d}B\n({p:.1f}%)'.format(p=pct,v=val)
         return my_format
 
-    # Judul
+    # Judul Besar dengan font lebih besar dan bold
     st.markdown("<h1 style='text-align: center; color: #F4C2C2;'>Tugas Data Visualisasi</h1>", unsafe_allow_html=True)
 
-    # Sumber data
+    # Tulisan kecil tentang sumber data
     st.markdown("[Indonesia Box Office Mojo](https://www.boxofficemojo.com/weekend/by-year/2024/?area=ID) - Data diambil dari Indonesia Box Office Mojo")
 
     # Memuat data dari file CSV
     df = pd.read_csv('film_data_2024.csv')
 
-    # Cleaning kolom 'Pendapatan'
+    # Membersihkan kolom 'Pendapatan' agar hanya berisi angka
     df['Pendapatan'] = df['Pendapatan'].replace('-', 0)
 
-    # Konversu kolom 'Pendapatan' ke tipe data float
+    # Mengonversi kolom 'Pendapatan' ke tipe data float
     df['Pendapatan'] = df['Pendapatan'].replace('[\$,]', '', regex=True).astype(float)
 
     # Menghitung total pendapatan per distributor
@@ -175,8 +175,8 @@ elif option == "IMDb Scrapping":
     plt.axis('equal')
     st.pyplot(plt)
 
-    # Bar Chart: Top 10 Distributors dari Total Revenue
-    st.write('## Top 10 Distributors dari Total Revenue')
+    # Bar Chart: Top 10 Distributors by Total Revenue
+    st.write('## Top 10 Distributors by Total Revenue')
     top_10_distributors = revenue_by_distributor.head(10)
     plt.figure(figsize=(12, 6))
     sns.barplot(x=top_10_distributors.values, y=top_10_distributors.index, palette="Blues_d")
@@ -185,8 +185,8 @@ elif option == "IMDb Scrapping":
     plt.ylabel('Distributor')
     st.pyplot(plt)
 
-    # Line Chart: Tren pendapatan secara waktu menurut distributor
-    st.write('## Tren pendapatan secara waktu menurut distributor')
+    # Line Chart: Revenue trends over time for selected distributors
+    st.write('## Revenue Trends Over Time for Selected Distributors')
     df['Tanggal'] = pd.to_datetime(df['Tanggal'], format='%d-%m-%Y')
     distributors_to_plot = st.multiselect('Pilih Distributor untuk Melihat Tren Pendapatan:', options=revenue_by_distributor.index.tolist(), default=revenue_by_distributor.index.tolist()[:3])
     if distributors_to_plot:
